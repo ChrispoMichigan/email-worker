@@ -1,0 +1,33 @@
+{
+  "name": "email-worker",
+  "version": "1.0.0",
+  "description": "Bulk email worker API with queue support",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.27.0",
+  "dependencies": {
+    "bullmq": "^5",
+    "dotenv": "^16",
+    "express": "^4",
+    "handlebars": "^4",
+    "html-to-text": "^9.0.5",
+    "ioredis": "^5",
+    "nodemailer": "^6",
+    "uuid": "^11.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "msgpackr-extract"
+    ]
+  }
+}
