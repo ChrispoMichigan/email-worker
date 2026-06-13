@@ -1,9 +1,12 @@
 import express from "express";
+import cors from "cors";
 import { v4 as uuidv4 } from "uuid";
 import { emailQueue } from "./queue.js";
 import { insert, findByJobId, list } from "./db.js";
+import { corsConfig } from "./corsConfig.js";
 
 const app = express();
+app.use(cors(corsConfig));
 app.use(express.json({ limit: "20mb" }));
 
 function resolveDelay(scheduledAt) {
