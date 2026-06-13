@@ -5,18 +5,23 @@ const KEY_ALL    = ()       => `email:idx:all`;
 const KEY_STATUS = (status) => `email:idx:status:${status}`;
 const KEY_BATCH  = (id)     => `email:idx:batch:${id}`;
 
-export async function insert({ id, job_id, batch_id, to_email, subject, template }) {
+export async function insert({
+  id, job_id, batch_id, to_email, subject, template,
+  scheduled_at = null,
+  status = "queued",
+}) {
   const now = new Date().toISOString();
   const score = Date.now();
   const pipe = connection.pipeline();
 
   pipe.hset(KEY_JOB(id), {
     id, job_id, batch_id: batch_id ?? "", to_email, subject, template,
-    status: "queued", error: "", created_at: now, updated_at: now,
+    status, scheduled_at: scheduled_at ?? "",
+    error: "", created_at: now, updated_at: now,
   });
 
   pipe.zadd(KEY_ALL(), score, id);
-  pipe.zadd(KEY_STATUS("queued"), score, id);
+  pipe.zadd(KEY_STATUS(status), score, id);
 
   if (batch_id) pipe.sadd(KEY_BATCH(batch_id), id);
 
