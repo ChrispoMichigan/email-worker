@@ -111,6 +111,24 @@ app.get("/time", (_req, res) => {
   res.json({ scheduledAt: new Date().toISOString() });
 });
 
+// GET /smtp-check — prueba de conectividad al servidor SMTP (solo diagnóstico)
+app.get("/smtp-check", async (_req, res) => {
+  const net = await import("net");
+  const host = process.env.SMTP_HOST;
+  const port = Number(process.env.SMTP_PORT) || 587;
+
+  if (!host) return res.status(500).json({ ok: false, error: "SMTP_HOST no definido" });
+
+  const result = await new Promise((resolve) => {
+    const socket = net.default.createConnection({ host, port, timeout: 8000 });
+    socket.once("connect", () => { socket.destroy(); resolve({ ok: true }); });
+    socket.once("timeout", () => { socket.destroy(); resolve({ ok: false, error: "Connection timeout" }); });
+    socket.once("error",  (err) => resolve({ ok: false, error: err.message }));
+  });
+
+  res.json({ host, port, ...result });
+});
+
 // GET /jobs?status=&batchId=&to=&limit=&offset=
 app.get("/jobs", async (req, res) => {
   const { status, batchId, to, limit, offset } = req.query;
