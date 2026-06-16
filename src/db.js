@@ -5,6 +5,8 @@ const KEY_ALL    = ()       => `email:idx:all`;
 const KEY_STATUS = (status) => `email:idx:status:${status}`;
 const KEY_BATCH  = (id)     => `email:idx:batch:${id}`;
 
+const TTL = 7 * 24 * 60 * 60; // 7 días en segundos
+
 export async function insert({
   id, job_id, batch_id, to_email, subject, template,
   scheduled_at = null,
@@ -20,10 +22,14 @@ export async function insert({
     error: "", created_at: now, updated_at: now,
   });
 
+  pipe.expire(KEY_JOB(id), TTL);
   pipe.zadd(KEY_ALL(), score, id);
   pipe.zadd(KEY_STATUS(status), score, id);
 
-  if (batch_id) pipe.sadd(KEY_BATCH(batch_id), id);
+  if (batch_id) {
+    pipe.sadd(KEY_BATCH(batch_id), id);
+    pipe.expire(KEY_BATCH(batch_id), TTL);
+  }
 
   await pipe.exec();
 }
