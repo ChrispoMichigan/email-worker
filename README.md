@@ -58,9 +58,9 @@ Encola un email para un destinatario. Responde inmediatamente con el ID del job.
 |---|---|---|---|
 | `to` | string | Sí | Dirección de destino |
 | `subject` | string | Sí | Asunto del email |
-| `html` | string | Sí* | HTML del email |
+| `html` | string | Sí* | HTML del email (soporta sintaxis Handlebars con `variables`) |
 | `template` | string | Sí* | Nombre de plantilla en `templates/` (sin `.html`) |
-| `variables` | object | No | Variables para la plantilla Handlebars |
+| `variables` | object | No | Variables Handlebars — funciona tanto con `html` como con `template` |
 | `scheduledAt` | string (ISO 8601) | No | Fecha/hora de envío programado |
 
 *Se requiere `html` o `template`, no ambos.

@@ -68,8 +68,10 @@ export function startWorker() {
 
       await updateStatus(jobId, "processing");
 
-      // Resolve HTML: inline takes priority, then file-based template
-      let finalHtml = html ?? renderTemplate(template, variables);
+      // Inline HTML pasa por Handlebars igual que las plantillas en disco
+      let finalHtml = html
+        ? handlebars.compile(html)(variables ?? {})
+        : renderTemplate(template, variables);
 
       const unsubscribeUrl = buildUnsubscribeUrl(to);
       if (unsubscribeUrl) {
