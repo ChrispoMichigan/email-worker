@@ -88,6 +88,10 @@ export function startWorker() {
         text,
       };
 
+      if (process.env.SMTP_REPLY_TO) {
+        mailOptions.replyTo = process.env.SMTP_REPLY_TO;
+      }
+
       if (unsubscribeUrl) {
         mailOptions.headers = {
           "List-Unsubscribe": `<${unsubscribeUrl}>`,
